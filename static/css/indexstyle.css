@@ -1,0 +1,15 @@
+div {
+  font-size: 50px;
+  color: salmon;
+}
+div p {
+  color: cyan;
+}
+
+.div1 {
+  border: 2px solid cyan;
+  padding: 10px;
+  color: salmon;
+}
+
+/*# sourceMappingURL=style.css.map */

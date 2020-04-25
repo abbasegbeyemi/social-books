@@ -1,0 +1,18 @@
+$bg-color: salmon
+$fore-color: cyan
+
+div
+  font-size: 50px
+  color: $bg-color
+  p
+    color: $fore-color
+
+%topgraph
+  border: 2px solid $fore-color
+  padding: 10px
+  color: $bg-color
+
+.div1
+  @extend %topgraph
+
+
