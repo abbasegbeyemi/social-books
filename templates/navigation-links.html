@@ -1,0 +1,14 @@
+{% extends 'navigation-layout.html' %}
+
+{% block nav_links %}
+
+    {% set links = ['home', 'search'] %}
+    <ul>
+        {% set active_page = request.endpoint %}
+        {% for link in links %}
+            <li class="{{ 'active' if active_page ==  link }}"><a href="{{ url_for(link) }}">{{ link.capitalize() }}</a>
+            </li>
+        {% endfor %}
+        <li style="float: right"><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+{% endblock %}

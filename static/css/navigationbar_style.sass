@@ -1,0 +1,80 @@
+@use "indexstyle.sass" as idx
+$navbg: #fff
+.sb-nav-logo
+  width: 60px
+  max-height: 100%
+  margin-left: 40px
+  margin-top: 5px
+  margin-bottom: 5px
+  transition: all 0.4s
+
+li
+  color: idx.$bg-base-color
+  float: left
+
+
+a
+  display: block
+  text-decoration: none
+  padding: 20px
+  margin-left: 30px
+  font-family: idx.$font-family
+
+
+ul
+  list-style-type: none
+  margin: 0
+  padding: 0
+  width: 520px
+  position: absolute
+  right: 0
+  top: 15%
+  transition: all 0.4s
+
+li a
+  text-align: center
+
+.bg
+  display: flex
+  position: fixed
+  top: 0
+  left: 0
+  z-index: 3
+  width: 100%
+  height: 100px
+  border-bottom: 3px solid white
+
+
+
+//a:visited
+//  color: idx.$bg-base-color
+
+a:visited
+  color: inherit
+
+a:hover
+  color: idx.$bg-accent-color
+
+a:active
+  color: inherit
+
+.active
+  color: black
+
+/* [ Responsive Page Behaviour ]
+@media (max-width: 576px)
+  ul
+    width: 400px
+    top: 25%
+
+  a
+    padding: 10px
+
+  .sb-nav-logo
+    width: 40px
+
+
+
+
+
+

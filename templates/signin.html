@@ -1,0 +1,31 @@
+{% extends "signin-page-layout.html" %}
+
+{% block form_title %} Sign in {% endblock %}
+
+{% block form_info %}
+
+    {% for formfield in form %}
+
+        {% if (formfield.type == "StringField") or  (formfield.type == "PasswordField") %}
+
+            <div class="input-border">
+                {{ formfield.label(class_="input-label") }}
+                {{ formfield(class_="input") }}
+                <span class="input-focus"></span>
+            </div>
+
+        {% endif %}
+
+    {% endfor %}
+
+    <!-- ==============================
+    [ Render the remember me checkbox ] -->
+    <div class="flex-m w-full p-b-33">
+
+        {{ form.remember(class_="checkbox-box") }}
+        {{ form.remember.label(class_="checkbox-label") }}
+
+
+    </div>
+
+{% endblock %}

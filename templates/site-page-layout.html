@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% set pagename = request.endpoint %}
+    <title>Kawe - {{ pagename.capitalize() }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sitepages_style.css') }}">
+    {% include 'navigation-links.html' %}
+
+</head>
+<body>
+    {% block page_body %}
+
+    {% endblock %}
+</body>
+</html>

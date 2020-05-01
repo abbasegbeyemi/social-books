@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Kawe - Welcome{% endblock %}</title>
+    <!-- ===Favicon Link===-->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <!-- ===CSS file Link===-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/indexstyle.css') }}">
+    <!-- ===Utils css for sizing, and padding===-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
+    <!-- ===Google font cause why the F not===-->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- ===Font awesome for th elittle arrow thing===-->
+    <link rel=" stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body style="background-color: #999999;">
+{% include 'navigation-layout.html' %}
+    <div class="limiter">
+        <div class="page-container">
+            <div class="page-bg"
+                 style="background-image: url({{ url_for('static', filename='images/bg-b1.jpg') }})">
+            </div>
+            <div class="login-area-border p-l-50 p-r-50 p-t-70 p-b-50">
+                <form novalidate class="page-form validate-form" action="{{ url_for(request.endpoint) }}" method=post>
+                    {{ form.hidden_tag() }}
+                    <span class="page-form-title p-b-60">
+                            {% block form_title %}{% endblock %}
+                        </span>
+
+                    {% block form_info %}
+
+                    {% endblock %}
+
+                    <div class="form-button-container">
+                        <div class="form-button-border">
+                            <div class="form-button-bg"></div>
+                            {{ form.submit(class_="form-button") }}
+                        </div>
+                        <a href="{{ url_for(alternative.endpoint) }}" class="txt1 hov1 dis-block p-r-30 p-t-10 p-b-10
+                        p-l-30">
+                            {{ alternative.label }}
+                            <i class=" fa fa-long-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

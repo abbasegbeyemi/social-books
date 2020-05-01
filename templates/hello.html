@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class="card" style="width: 80%; box-shadow: 2px 2px 6px #314549">
+        <div class="card-body">
+            <h5 class="card-title">Success {{ name }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Your message has been sent.</h6>
+            <p class="card-text">{{ address }}</p>
+            <a href="{{ url_for("contact") }}" class="card-link">Message again</a>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,39 @@
+{% extends 'bootstrap-pages/form-template.html' %}
+
+{% block formfields %}
+
+    {% for formfield in form %}
+
+        {% if (formfield.type == "StringField") or  (formfield.type == "PasswordField") %}
+
+            {% set fieldclass = ["form-control", "form-field"] %}
+            {% if formfield.errors %}
+                {{ fieldclass.append("is-invalid") or "" }}
+            {% endif %}
+
+            <div class="form-group">
+                {{ formfield(class_= fieldclass | join(" "), placeholder=formfield.description
+                .placeholder) }}
+                {% for message in formfield.errors %}
+                    <div class="invalid-feedback">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    {% endfor %}
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            {{ form.remember(class_="custom-control-input") }}
+            {{ form.remember.label(class_="custom-control-label", style="color: white") }}
+        </div>
+    </div>
+{% endblock %}
+{% block formfooter %}
+    <p style="color: silver; margin-top: 30px">New to Kawe?
+        <a style="color: white" href="{{ url_for(alternative.endpoint) }}">
+            Join our community!
+        </a>
+    </p>
+{% endblock %}

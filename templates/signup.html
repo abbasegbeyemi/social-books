@@ -1,0 +1,21 @@
+{% extends "signin-page-layout.html" %}
+
+{% block form_title %} Register {% endblock %}
+
+{% block form_info %}
+
+    {% for formfield in form %}
+
+        {% if (formfield.type == "StringField") or  (formfield.type == "PasswordField") %}
+
+            <div class="input-border">
+                {{ formfield.label(class_="input-label") }}
+                {{ formfield(class_="input") }}
+                <span class="input-focus"></span>
+            </div>
+
+        {% endif %}
+
+    {% endfor %}
+
+{% endblock %}

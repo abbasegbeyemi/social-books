@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <!-- ==============================
+    [ Template CSS ] -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form-template.css') }}">
+
+    <!-- ===Favicon Link===-->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <title> Kawe - {{ title }}</title>
+</head>
+<body>
+    <div id="page-bg" style="background-image: url('{{ url_for('static', filename='images/bg-b1.jpg') }}')"></div>
+    <!-- ==============================
+    [ This part is the top part of the page. We'll come back here later ] -->
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="navbar-brand ml-3 mt-3">
+            <img src="{{ url_for('static', filename='images/sblogo-full.svg') }}" alt="Social Books
+        Logo" style="width: 60px">
+        </a>
+    </nav>
+
+    <!-- ==============================
+    [ We always want to wrap the page elements in a container for proper resizing ] -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-sm">
+                <div id="form-container" class="mx-auto">
+                    <h3 id="form-title">{{ title }}</h3>
+                    <!-- ==============================
+                    [ The form will be contained here ] -->
+                    <form action="{{ url_for(request.endpoint) }}" method=post novalidate>
+                        {{ form.hidden_tag() }}
+                        {% block formfields %}
+
+                        {% endblock %}
+                        {{ form.submit(class_="btn btn-lg btn-block", id="submit-button") }}
+                    </form>
+                    {% block formfooter %}
+                    
+                    {% endblock %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

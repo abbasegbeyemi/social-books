@@ -1,18 +1,322 @@
-$bg-color: salmon
-$fore-color: cyan
+$bg-base-color: #AF8E1F
+$bg-accent-color: lighten($bg-base-color, 30%)
+$bg-form-color: #fff
+$text-title-color: #333333
+$gradient-color-list: $bg-base-color, $bg-accent-color
+$gradient-direction: 45deg
+$input-line-color: #dbdbdb
+$input-label-color: #999999
+$input-text-color: #555555
+$font-family: 'Nunito Sans', sans-serif
+$reg-font: 400
+$semi-bold-font: 700
+$bold-font: 800
 
-div
-  font-size: 50px
-  color: $bg-color
-  p
-    color: $fore-color
+/* ==================================================================
+/* [ Declare mixins for cross browser performance. Use autoprefixer instead. ]
+@mixin gradient($direction, $list)
 
-%topgraph
-  border: 2px solid $fore-color
-  padding: 10px
-  color: $bg-color
 
-.div1
-  @extend %topgraph
+@mixin transition($duration)
+  -webkit-transition: all $duration
+  -o-transition: all $duration
+  -moz-transition: all $duration
+  transition: all $duration
 
+/* ==================================================================
+/* [ We need to restyle some tags by default ]
+
+p
+  font-family: $font-family
+  font-size: 14px
+  line-height: 1.7
+  color: #666666
+
+*
+  margin: 0
+  padding: 0
+  box-sizing: border-box
+
+body, html
+  height: 100%
+
+/* ==================================================================
+/* [ Remove the default properties from these inputs ]
+input
+  outline: none !important
+  border: none
+
+input:focus::-webkit-input-placeholder
+  color: transparent
+
+input:focus:-moz-placeholder
+  color: transparent
+
+input:focus::-moz-placeholder
+  color: transparent
+
+input:focus:-ms-input-placeholder
+  color: transparent
+
+textarea
+  outline: none
+  border: none
+
+textarea:focus, input:focus
+  border-color: transparent !important
+
+textarea:focus::-webkit-input-placeholder
+  color: transparent
+
+textarea:focus:-moz-placeholder
+  color: transparent
+
+textarea:focus::-moz-placeholder
+  color: transparent
+
+textarea:focus:-ms-input-placeholder
+  color: transparent
+
+input::-webkit-input-placeholder
+  color: #cccccc
+
+input:-moz-placeholder
+  color: #cccccc
+
+input::-moz-placeholder
+  color: #cccccc
+
+input:-ms-input-placeholder
+  color: #cccccc
+
+textarea::-webkit-input-placeholder
+  color: #cccccc
+
+textarea:-moz-placeholder
+  color: #cccccc
+
+textarea::-moz-placeholder
+  color: #cccccc
+
+textarea:-ms-input-placeholder
+  color: #cccccc
+
+/* ---------------------------------------------------------------------
+button
+  outline: none !important
+  border: none
+  background: transparent
+
+button:hover
+  cursor: pointer
+
+iframe
+  border: none !important
+
+/* ==================================================================
+/* [ Helpers for text formatting ]
+.txt1
+  font-family: $font-family
+  font-size: 16px
+  color: #666666
+  line-height: 1.4
+  text-decoration: none
+
+.hov1:hover
+  color: $bg-base-color
+
+
+/* ==================================================================
+/* [ Page General ]
+.limiter
+  width: 100%
+  margin: 0 auto
+
+.page-container
+  width: 100%
+  display: flex
+  align-items: stretch
+  flex-wrap: wrap
+
+.login-area-border
+  width: 520px
+  min-height: 100vh
+  background: $bg-form-color
+  position: relative
+
+/* ==================================================================
+/* [ Page Background Image ]
+
+.page-bg
+  background-repeat: no-repeat
+  background-position: center
+  background-size: cover
+  width: calc(100% - 520px)
+  position: relative
+  z-index: 1
+
+.page-bg::before
+  content: ""
+  display: block
+  position: absolute
+  z-index: -1
+  width: 100%
+  height: 100%
+  top: 0
+  left: 0
+  background: linear-gradient($gradient-direction, $gradient-color-list)
+  opacity: 0.4
+
+/* ==================================================================
+/* [ Login Form ]
+
+.page-form
+  width: 100%
+  display: flex
+  flex-wrap: wrap
+  justify-content: space-between
+  position: relative
+  top: 20%
+
+.page-form-title
+  display: block
+  width: 100%
+  font-size: 40px
+  font-family: $font-family
+  font-weight: $bold-font
+  color: $text-title-color
+  line-height: 1.2
+  text-align: left
+
+/* ==================================================================
+/* [ Inputs ]
+.input-border
+  width: 100%
+  position: relative
+  border-bottom: 2px solid $input-line-color
+  margin-bottom: 45px
+
+.input-label
+  font-size: 18px
+  color: $input-label-color
+  line-height: 1.2
+  padding-left: 2px
+  font-family: $font-family
+  font-weight: $semi-bold-font
+
+.input
+  display: block
+  width: 100%
+  height: 50px
+  background: transparent
+  font-size: 22px
+  font-family: $font-family
+  font-weight: $reg-font
+  color: $input-text-color
+  line-height: 1.2
+  padding: 0 2px
+
+.input-focus
+  position: absolute
+  display: block
+  width: 100%
+  height: 100%
+  top: 0
+  left: 0
+  pointer-events: none
+
+.input-focus::before
+  content: ""
+  display: block
+  position: absolute
+  bottom: -2px
+  left: 0
+  width: 0
+  height: 2px
+  transition: all 0.4s
+  background: linear-gradient(-45deg, $gradient-color-list)
+
+.input:focus + .input-focus::before
+  width: 100%
+
+/* ==================================================================
+/* [ Styling for the submit button ]
+.form-button-container
+  width: 100%
+  display: flex
+  flex-wrap: wrap
+  justify-content: space-between
+  align-items: center
+
+.form-button-border
+  display: block
+  position: relative
+  z-index: 1
+  border-radius: 25px
+  overflow: hidden
+
+.form-button-bg
+  position: absolute
+  z-index: -1
+  width: 100%
+  height: 300%
+  left: 0
+  bottom: -100%
+  transition: all 0.4s
+  background: linear-gradient(join($gradient-color-list, $gradient-color-list))
+
+.form-button
+  display: flex
+  justify-content: center
+  align-items: center
+  padding: 0 20px
+  min-width: 244px
+  height: 50px
+  font-family: $font-family
+  font-weight: $semi-bold-font
+  font-size: 16px
+  color: #fff
+  line-height: 1.2
+  background-color: transparent
+
+.form-button:hover
+  cursor: pointer
+
+.form-button-border:hover .form-button-bg
+  bottom: 0
+
+/* ==================================================================
+/* [ Styling for the checkbox ]
+.checkbox-box
+  margin: 0
+  display: block
+  padding-left: 20px
+  cursor: pointer
+  border-radius: 0
+  width: 16px
+  height: 16px
+
+.checkbox-label
+  color: $input-label-color
+  margin-left: 5px
+  font-family: $font-family
+  font-weight: $reg-font
+  font-size: 13px
+  display: block
+  justify-content: center
+
+.checkbox-box:checked + .checkbox-label
+  color: $bg-base-color
+
+
+/* ==================================================================
+/* [ Responsive Page Behaviour ]
+@media (max-width: 576px)
+  .login-area-wrap
+    padding-left: 15px
+    padding-right: 15px
+
+  //.form-button-container
+  //  position: relative
+  //  left: 80px
 

@@ -1,0 +1,52 @@
+{% extends 'bootstrap-pages/form-template.html' %}
+
+{% block formfields %}
+
+    {% for formfield in form %}
+
+        {% if (formfield.type == "StringField") or  (formfield.type == "PasswordField") %}
+
+            {% set fieldclass = ["form-control", "form-field"] %}
+            {% if formfield.errors %}
+                {{ fieldclass.append("is-invalid") or "" }}
+                {% set preverror = True %}
+            {% endif %}
+
+            <div class="form-group">
+                {{ formfield(class_=fieldclass | join(" "), placeholder=formfield.label.text) }}
+                {% for message in formfield.errors %}
+                    <div class="invalid-feedback">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    {% endfor %}
+    {% set cbclass = ["custom-control-input"] %}
+    {% if form.agree.errors %}
+        {{ cbclass.append("is-invalid") or "" }}
+    {% endif %}
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            {{ form.agree(class_= cbclass | join(" ")) }}
+            <label style="color: silver" class="custom-control-label" for="agree">I agree to the
+                <a style="color: white" href="{{ url_for(alternative.endpoint) }}">
+                    terms and conditions
+                </a>
+            </label>
+                    {% for message in form.agree.errors %}
+            <div class="invalid-feedback">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+{% block formfooter %}
+    <p style="color: silver; margin-top: 30px">Already a member?
+        <a style="color: white" href="{{ url_for(alternative.endpoint) }}">
+            Sign in!
+        </a>
+    </p>
+{% endblock %}

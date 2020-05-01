@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="{{ url_for('static', filename="css/navigationbar_style.css") }}">
+<link rel="stylesheet" href="{{ url_for('static', filename="css/util.css") }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+<div class="bg">
+    <img class="sb-nav-logo" src="{{ url_for('static', filename='images/sblogo-full.svg') }}" alt="Social Books
+        Logo">
+    {% block nav_links %}
+    
+    {% endblock %}
+
+</div>
+</html>

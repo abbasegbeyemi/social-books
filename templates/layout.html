@@ -2,9 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>{% block title %}Kawe - Reading together{% endblock %}</title>
+
+    {% block css %}
+        <link rel="stylesheet"
+              type="text/css"
+              href="{{ url_for('static.css', filename='indexstyle.css') }}">
+    {% endblock %}
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
-$END$
+    {#    Here we will always have a navigation bar as long as we are using this layout#}
+    {% include 'navigation-links.html' %}
+    <div class="jumbotron">
+        <h1>{% block heading %} Welcome {% endblock %}</h1>
+    </div>
+    <div class="container">
+        {% block body %}
+        {% endblock %}
+    </div>
 </body>
+
+
 </html>
