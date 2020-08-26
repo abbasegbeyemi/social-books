@@ -1,0 +1,38 @@
+{% extends 'bootstrap-pages/site-template.html' %}
+
+{% block pagecontent %}
+    <div class="container py-5">
+        <div class="row">
+            <img class="col-sm-4" src="{{ book.image_url if book.image_url else
+                        url_for
+                        ('static',
+                        filename="images/kawe-single.svg") }}" alt="Book Cover">
+            <div class="col-sm-8">
+                <dl class="row">
+                    <dt class="col-sm-4 text-right">Title</dt>
+                    <dd class="col-sm-8">{{ book.title }}</dd>
+                    <dt class="col-sm-4 text-right">Author</dt>
+                    <dd class="col-sm-8">{{ book.author }}</dd>
+                </dl>
+                <form action="{{ url_for('submit_review', isbn=book.isbn) }}" method="post">
+                    {{ reviewform.hidden_tag() }}
+                    <dl class="row">
+                        <dt class="col-sm-4 text-right">Rating (1 -5)</dt>
+                        <dd class="col-sm-8">{{ reviewform.rating(class_="form-control") }}</dd>
+                        <dt class="col-sm-4 text-right">Review</dt>
+                        <dd class="col-sm-8">
+                            {{ reviewform.review(class_=("form-control"),
+                        placeholder=reviewform.review.label.text) }}
+                        </dd>
+                        <dt class="col-sm-4 text-right"></dt>
+                        <dd class="col-sm-8 text-center">
+                            {{ reviewform.submit(class_="btn my-2 my-sm-0 btn-block", id="submit-button") }}
+                        </dd>
+                    </dl>
+
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

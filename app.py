@@ -1,11 +1,13 @@
 import os
 
-from flask import Flask, render_template, request, session, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_login import login_required, LoginManager, login_user, logout_user, current_user
+from sqlalchemy import create_engine, MetaData
 
-from forms import UserLoginForm, UserRegistrationForm
+from forms import UserLoginForm, UserRegistrationForm, SearchForm, ReviewForm
+from python_helpers.datbase_utils import user_info_get, info_check, add_user, username_and_password_check, \
+    get_user_activity, get_goodreads_ratings, get_books_search, add_some_reviewers, get_book_reviews, api_book_data
 from user import User
-from sqlalchemy import create_engine, MetaData, select, func, tuple_
 
 # region App Initialization
 app = Flask(__name__)
@@ -21,72 +23,6 @@ engine = create_engine(DATABASE_URL, echo=False)
 metadata = MetaData(bind=engine)
 metadata.reflect()
 conn = engine.connect()
-
-
-# endregion
-
-# region Database Utils
-def insert_into_table(table: str, data):
-    # metadata.reflect(only=[table])
-    tb_ins = metadata.tables[table]
-    ins = tb_ins.insert()
-    conn.execute(ins, data)
-
-
-def add_user(user: dict):
-    """
-    Add user to database
-    :param user: The user details. user = { 'name': str, 'email': str, 'username': str, 'password': str }
-    :return: None
-    """
-    new_user = [user]
-    insert_into_table('users', new_user)
-
-
-def info_check(table: str, label: str, info: str) -> tuple:
-    """
-    This just serves to check a table for info, and return true or false, and ID
-    of the data if present.
-    :param table: str [ table name ]
-    :param label: str [ label for the info you're interested in ]
-    :param info: str [ info you are interested in ]
-    :return: bool [ True or false if info is present ]
-    """
-    tb_info = metadata.tables[table]
-    s = select(
-        [
-            tb_info.c.id
-        ]).where(tb_info.c[label] == info)
-    result = conn.execute(s).scalar()
-    return bool(result), result
-
-
-def username_and_password_check(username: str, password: str) -> bool:
-    """
-    Checks the entered username and password against the database
-    :param username: str
-    :param password: str
-    :return: bool [ True or false if account is registered ]
-    """
-    table = metadata.tables['users']
-    s = select(
-        [
-            func.count(table.c.id)
-        ]).where(tuple_(table.c['username'], table.c['password'])
-                 .in_([(username, password)]))
-    result = conn.execute(s).scalar()
-    return bool(result)
-
-
-def user_info_get(labels: list, idx: str) -> tuple:
-    tb_info = metadata.tables['users']
-    idx = int(idx)
-    s = select(
-        [
-            tb_info.c[field] for field in labels
-        ]).where(tb_info.c.id == idx)
-    result = conn.execute(s).fetchone()
-    return result
 
 
 # endregion
@@ -148,10 +84,11 @@ def signin():
             user_details['username'],
             user_details['password'])
         if not exists:
-            flash('Username or pasword is incorrect')
-            return render_template('signin.html',
+            # flash('Username or pasword is incorrect')
+            return render_template('bootstrap-pages/signin-page.html',
                                    form=signin_form,
-                                   alternative=alternative)
+                                   alternative=alternative,
+                                   title='Sign in')
 
         _, user_id = info_check('users',
                                 'username',
@@ -164,13 +101,14 @@ def signin():
             remember = user_details.get('remember') is not None
             user = User(user_id, name, email, username)
             login_user(user, remember=remember)
-
             return redirect(url_for('home'))
 
-    return render_template('bootstrap-pages/signin-page.html',
-                           form=signin_form,
-                           alternative=alternative,
-                           title='Sign in')
+    return render_template(
+        # 'signin.html',
+        'bootstrap-pages/signin-page.html',
+        form=signin_form,
+        alternative=alternative,
+        title='Sign in')
 
 
 @login_required
@@ -179,17 +117,105 @@ def home():
     if not current_user.is_authenticated:
         return redirect(url_for('signin'))
 
-    return render_template('bootstrap-pages/home.html')
+    # Before we render the users data, we need to get all the books and pass to
+    # the home page.
+    user_activity = get_user_activity(current_user.get_id())
+
+    isbn_list = [act['isbn'] for act in user_activity]
+
+    # goodreads = get_goodreads_ratings(isbn_list) if isbn_list else []
+    goodreads = [d for d in range(len(isbn_list))]
+
+    searchform = SearchForm()
+
+    return render_template('bootstrap-pages/home.html', activity=user_activity,
+                           goodreads=goodreads,
+                           searchform=searchform)
 
 
 @app.route('/logout')
 @login_required
 def logout():
+    if not current_user.is_authenticated:
+        return redirect(url_for('signin'))
     # remove the username from the session if it is there
     logout_user()
     return redirect(url_for('signin'))
 
 
-@app.route('/search')
+@app.route('/search', methods=['GET'])
 def search():
-    return render_template('bootstrap-pages/search.html')
+    searchform = SearchForm()
+    searchterm = request.args['searchbox']
+
+    result = get_books_search(searchterm)
+    return render_template('bootstrap-pages/search.html', result=result, searchform=searchform)
+
+
+@login_required
+@app.route('/detail/<isbn>')
+def detail(isbn):
+    searchform = SearchForm()
+    # goodreads = get_goodreads_ratings([isbn])
+    goodreads = [3]
+    book = get_books_search(isbn)
+    session['book'] = book[0]['id']
+    session['isbn'] = book[0]['isbn']
+    user_activity = get_user_activity(current_user.get_id())
+    # Get the isbn of all the books the user has reviewed
+    user_isbns = [book_isbn for book_isbn in [act['isbn'] for act in user_activity]]
+    user_reviews = [book_review for book_review in [act['review'] for act in user_activity]]
+    user_ratings = [book_review for book_review in [act['rating'] for act in user_activity]]
+
+    list_check = {k: v for k, v in zip(user_isbns, zip(user_reviews, user_ratings))}
+
+    try:
+        book[0].update({'user_review': list_check[isbn]})
+    except KeyError:
+        pass
+
+    other_reviews = get_book_reviews(isbn)
+
+    # Filter the users review from the result
+    filtered_reviews = [
+        f for f in other_reviews if f['username'] != current_user.username
+    ]
+
+    book[0].update({'other_reviews': filtered_reviews})
+
+    return render_template("bootstrap-pages/detail.html",
+                           book=book[0],
+                           goodreads=goodreads,
+                           searchform=searchform)
+
+
+@app.route('/review/<isbn>')
+def review(isbn):
+    book = get_books_search(isbn)
+    reviewform = ReviewForm()
+    searchform = SearchForm()
+    return render_template("bootstrap-pages/review.html",
+                           reviewform=reviewform,
+                           searchform=searchform,
+                           book=book[0])
+
+
+@app.route('/submit_review', methods=['POST'])
+def submit_review():
+    # We need a dict as {reviewer, book, rating, review}
+    # book:
+    review_info = {
+        'reviewer': current_user.get_id(),
+        'book': int(session['book']),
+        'rating': int(request.form['rating']),
+        'review': request.form['review']
+    }
+    add_some_reviewers(review_info)
+    return redirect(url_for('detail', isbn=session['isbn']))
+
+
+@app.route('/api/<isbn>', methods=['GET'])
+def book_data(isbn):
+    response = api_book_data(isbn)
+    response['average_review'] = str(round(response['average_review'], 2))
+    return jsonify(response)

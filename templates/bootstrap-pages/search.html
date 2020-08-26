@@ -1,1 +1,36 @@
 {% extends 'bootstrap-pages/site-template.html' %}
+
+{% block pagecontent %}
+    <div class="my-3">
+        <h5 class="text-center text-info font-weight-light">Your search returned {{ result | length }} results.</h5>
+        {% if result %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ISBN</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Year</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for res in result %}
+                    <tr style="transform: rotate(0)">
+                        <th scope="row">
+                            <a class="stretched-link text-muted text-decoration-none"
+                               href="{{ url_for('detail', isbn=res.isbn) }}">
+                                {{ loop.index }}
+                            </a>
+                        </th>
+                        <td>{{ res.isbn }}</td>
+                        <td>{{ res.title }}</td>
+                        <td>{{ res.author }}</td>
+                        <td>{{ res.year }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}

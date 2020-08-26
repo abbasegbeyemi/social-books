@@ -1,2 +1,40 @@
 {% extends 'bootstrap-pages/site-template.html' %}
 
+{% block pagecontent %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <h2>Welcome {{ current_user.name }} </h2>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <h4 class="col-auto py-3 ml-3" style="color: #AF8E1F">Here are your reviewed books.</h4>
+        </div>
+        <div class="row justify-content-center">
+            {% if activity %}
+                {% for act in activity %}
+                    <div class="card col-auto mr-3 my-3" style="width: 18rem;">
+                        <img style="height: 400px" class="card-img-top" src="{{ act.image_url if act.image_url else
+                        url_for
+                        ('static',
+                        filename="images/kawe-single.svg") }}"
+                             alt="Card image">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ act.title }}</h5>
+                            <h6 class="card-subtitle mb-2">{{ act.author }}</h6>
+                            <p class="card-text">Your rating: {{ act.rating }}</p>
+                            <p class="card-text">Goodreads rating: {{ goodreads[loop.index0] }}</p>
+                            <p class="card-text">Your review: {{ act.review }}</p>
+                        </div>
+                        <a class="stretched-link text-muted text-decoration-none"
+                               href="{{ url_for('detail', isbn=act.isbn) }}">
+                            </a>
+                    </div>
+
+                {% endfor %}
+            {% else %}
+                <p>You don't have any book reviews yet. Pick up a book sometime honey. </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

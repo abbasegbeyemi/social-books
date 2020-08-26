@@ -1,0 +1,57 @@
+{% extends 'bootstrap-pages/site-template.html' %}
+
+{% block pagecontent %}
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-sm-4">
+                <img class="img-fluid img-thumbnail" src="{{ book.image_url if book.image_url else
+                        url_for
+                        ('static',
+                        filename="images/kawe-single.svg") }}" alt="Book Cover">
+            </div>
+            <div class="col-sm-8">
+                <dl class="row">
+                    <dt class="col-sm-4">Title</dt>
+                    <dd class="col-sm-8">{{ book.title }}</dd>
+                    <dt class="col-sm-4">Author</dt>
+                    <dd class="col-sm-8">{{ book.author }}</dd>
+                    <dt class="col-sm-4">Goodreads rating</dt>
+                    <dd class="col-sm-8">{{ goodreads[0] }}</dd>
+                    <dt class="col-sm-4">Publication year</dt>
+                    <dd class="col-sm-8">{{ book.year }}</dd>
+                    <dt class="col-sm-4">ISBN</dt>
+                    <dd class="col-sm-8">{{ book.isbn }}</dd>
+                    <dt class="col-sm-4">Your review</dt>
+                    {% if book.user_review %}
+                        <dd class="col-sm-8">{{ book.user_review[0] }}</dd>
+                    {% else %}
+                        <dd class="col-sm-8"><a href="{{ url_for('review', isbn=book.isbn) }}">Leave a review.</a></dd>
+                    {% endif %}
+                    <dt class="col-sm-4">Your rating</dt>
+                    {% if book.user_review %}
+                        <dd class="col-sm-8">{{ book.user_review[1] }}</dd>
+                    {% else %}
+                        <dd class="col-sm-8"><a href="{{ url_for('review', isbn=book.isbn) }}">Leave a rating.</a></dd>
+                    {% endif %}
+                </dl>
+                {% if book.other_reviews %}
+                    <h2 style="margin-top: 50px">Other reviews</h2>
+                    <dl class="row">
+                        <dt class="col-sm-3 my-3">User</dt>
+                        <dt class="col-sm-3 my-3 text-center">Rating</dt>
+                        <dt class="col-sm-6 my-3">Review</dt>
+                        {% for rev in book.other_reviews %}
+                            <dt class="col-sm-3">{{ rev.username }}</dt>
+                            <dd class="col-sm-3 text-center">{{ rev.rating }}</dd>
+                            <dd class="col-sm-6">{{ rev.review }}</dd>
+                        {% endfor %}
+                    </dl>
+                {% else %}
+                    <h5 class="text-center text-info font-weight-light">
+                        There are no other reviews.
+                    </h5>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
